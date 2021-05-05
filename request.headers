@@ -1,0 +1,8 @@
+#格式为 key:value ,一般情况下会自带冒号的,一般情况下不区分大小写的,一行一个参数,最前面加 # 会自动忽略,简单说就是这次用完这个参数,但是不知道哪个时候还想用,不想删除,要保留,在最前面加个 # 即可,看不懂的无视,直接再次修改所有请求头吧,Cookie也可以粘贴在这里,不懂精简的就把抓包到的所有请求头都添加在这里
+
+#通用移动端User-Agent
+User-Agent:Mozilla/5.0 (Linux; Android 11; GM1910) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.91 Mobile Safari/537.36
+
+Content-Type:application/x-www-form-urlencoded;charset=UTF-8
+
+Cookie:
