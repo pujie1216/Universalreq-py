@@ -1,4 +1,4 @@
 {
-  "codedate":"2021-5-5 19:00",
-  "changelog":"first code\n"
+  "codedate":"2021-5-13 19:30",
+  "changelog":"1.修复data含中文时编码出错的问题\n2.增加可自定义文本转换编码\n3.修复白痴的更新提示\n"
 }
