@@ -148,7 +148,7 @@ def requestData():
         i = i.strip()
         if not len(i) or i.startswith("#"):
           continue
-        data = i
+        data = i.encode(linecache.getline("request.data", 4).strip().replace("#", ""))
   else:
     data = input("当前目录没有 request.data 文件,需要自行填写data\n没有data的直接按确定键:")
     if data == "":
@@ -181,19 +181,19 @@ def requestGo(requesturlp, requestheaders, requestdata, requesttimeout, requestl
         if len(webencode) != 0:
           responset = response.content.decode(webencode[0])
         else:
-          responset = response.content.decode("utf-8")
+          responset = response.content.decode(linecache.getline("request.set", 14).strip())
         print(time.strftime("%H:%M:%S ") + responset)
-        stopresponse = linecache.getline("request.set", 14).strip()
+        stopresponse = linecache.getline("request.set", 17).strip()
         if stopresponse == "0":
           pass
-        elif stopresponse == "1" and re.findall(linecache.getline("request.set", 17).strip(), responset,
+        elif stopresponse == "1" and re.findall(linecache.getline("request.set", 20).strip(), responset,
                                                 flags=re.I) == []:
           print("\n已根据设置的结果停止刷新")
           if noticpath != "false":
             Notification().NoticMain(noticpath, responset.replace('"', "'"))
           time.sleep(30)
           break
-        elif stopresponse == "2" and re.findall(linecache.getline("request.set", 20).strip(), responset,
+        elif stopresponse == "2" and re.findall(linecache.getline("request.set", 23).strip(), responset,
                                                 flags=re.I) != []:
           print("\n已根据设置的结果停止刷新")
           if noticpath != "false":
@@ -204,8 +204,12 @@ def requestGo(requesturlp, requestheaders, requestdata, requesttimeout, requestl
         print("请求的网址 %s 了" % (response.status_code))
         response.raise_for_status()
       time.sleep(requestlooptime)
-  except (requests.exceptions.Timeout, requests.exceptions.ConnectionError, requests.exceptions.HTTPError):
-    print("%s 网络出错了, %s 秒后重新访问" % (time.strftime("%H:%M:%S "), requestlooptime))
+  except requests.exceptions.HTTPError:
+    print("%s 秒后重新访问" % (requestlooptime))
+    time.sleep(requestlooptime)
+    requestGo(requesturlp, requestheaders, requestdata, requesttimeout, requestlooptime, noticpath)
+  except (requests.exceptions.Timeout, requests.exceptions.ConnectionError):
+    print("%s 访问网址出错了, %s 秒后重新访问" % (time.strftime("%H:%M:%S "), requestlooptime))
     time.sleep(requestlooptime)
     requestGo(requesturlp, requestheaders, requestdata, requesttimeout, requestlooptime, noticpath)
   except Exception as err:
@@ -217,8 +221,8 @@ def requestGo(requesturlp, requestheaders, requestdata, requesttimeout, requestl
       requestGo(requesturlp, requestheaders, requestdata, requesttimeout, requestlooptime, noticpath)
 
 def requestMain():
-  if os.path.isfile("request.set") and len(open("request.set", errors="ignore", encoding="utf-8").readlines()) == 23:
-    noticpath = linecache.getline("request.set", 23).strip()
+  if os.path.isfile("request.set") and len(open("request.set", errors="ignore", encoding="utf-8").readlines()) == 26:
+    noticpath = linecache.getline("request.set", 26).strip()
     noticsetpath = noticpath + "/notic.set"
     try:
       noticlines = len(open(noticsetpath, errors="ignore", encoding="UTF-8").readlines())
@@ -255,7 +259,7 @@ def requestMain():
   requestExit()
 
 try:
-  codedatenow = datetime.datetime.strptime("2021-5-3 21:30", "%Y-%m-%d %H:%M")
+  codedatenow = datetime.datetime.strptime("2021-5-13 19:30", "%Y-%m-%d %H:%M")
   codeversionj = requests.get("https://raw.githubusercontent.com/pujie1216/Universalreq-py/main/codeversion.json",
                               timeout=5).json()
   codedatenew = datetime.datetime.strptime(codeversionj["codedate"], "%Y-%m-%d %H:%M")
